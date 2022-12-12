@@ -17,8 +17,7 @@ import (
 /*
 InitTracerProvider initializes tracerProvider and returns it. It also returns error which may happen during init process
 */
-func InitTracerProvider(serviceName string) (trace.TracerProvider, error) {
-	ctx := context.Background()
+func InitTracerProvider(serviceName string, ctx context.Context) (trace.TracerProvider, error) {
 	exp, err := newExporter()
 	if err != nil {
 		return nil, err
