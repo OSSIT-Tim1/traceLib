@@ -1,4 +1,4 @@
-package tracer
+package traceLib
 
 import (
 	"context"
@@ -10,6 +10,7 @@ import (
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.12.0"
 	"go.opentelemetry.io/otel/trace"
+	"net/http"
 	"os"
 )
 
@@ -66,4 +67,16 @@ func newTraceProvider(exp sdktrace.SpanExporter, serviceName string) *sdktrace.T
 		sdktrace.WithBatcher(exp),
 		sdktrace.WithResource(r),
 	)
+}
+
+/*
+ExtractTraceInfoMiddleware is middleman function.
+This middleware is intended to be used with an HTTP server and will extract trace information from the incoming request and attach it to the request's context.
+This trace information can then be used downstream by other parts of the code to do things like log tracing information for requests.
+*/
+func ExtractTraceInfoMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := otel.GetTextMapPropagator().Extract(r.Context(), propagation.HeaderCarrier(r.Header))
+		next.ServeHTTP(w, r.WithContext(ctx))
+	})
 }
