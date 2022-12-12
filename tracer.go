@@ -15,9 +15,9 @@ import (
 )
 
 /*
-InitTracer initializes tracer and returns it. It also returns error which may happen during init process
+InitTracerProvider initializes tracerProvider and returns it. It also returns error which may happen during init process
 */
-func InitTracer(serviceName string) (trace.Tracer, error) {
+func InitTracerProvider(serviceName string) (trace.TracerProvider, error) {
 	ctx := context.Background()
 	exp, err := newExporter()
 	if err != nil {
@@ -25,10 +25,7 @@ func InitTracer(serviceName string) (trace.Tracer, error) {
 	}
 	tp := newTraceProvider(exp, serviceName)
 	defer func() { _ = tp.Shutdown(ctx) }()
-	otel.SetTracerProvider(tp)
-	tracer := tp.Tracer(serviceName)
-	otel.SetTextMapPropagator(propagation.TraceContext{})
-	return tracer, nil
+	return tp, nil
 }
 
 /*
