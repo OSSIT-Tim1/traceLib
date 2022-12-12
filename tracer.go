@@ -21,7 +21,8 @@ func InitTracerProvider(serviceName string) (*sdktrace.TracerProvider, error) {
 		return nil, err
 	}
 	tp := newTraceProvider(exp, serviceName)
-
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(propagation.TraceContext{})
 	return tp, nil
 }
 
