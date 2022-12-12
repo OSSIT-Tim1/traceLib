@@ -1,7 +1,6 @@
 package traceLib
 
 import (
-	"context"
 	"errors"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/jaeger"
@@ -17,13 +16,11 @@ import (
 InitTracerProvider initializes tracerProvider and returns it. It also returns error which may happen during init process
 */
 func InitTracerProvider(serviceName string) (*sdktrace.TracerProvider, error) {
-	ctx := context.Background()
 	exp, err := newExporter()
 	if err != nil {
 		return nil, err
 	}
 	tp := newTraceProvider(exp, serviceName)
-	defer func() { _ = tp.Shutdown(ctx) }()
 
 	return tp, nil
 }
