@@ -9,7 +9,6 @@ import (
 	"go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.12.0"
-	"go.opentelemetry.io/otel/trace"
 	"net/http"
 	"os"
 )
@@ -17,7 +16,7 @@ import (
 /*
 InitTracerProvider initializes tracerProvider and returns it. It also returns error which may happen during init process
 */
-func InitTracerProvider(serviceName string) (trace.TracerProvider, error) {
+func InitTracerProvider(serviceName string) (*sdktrace.TracerProvider, error) {
 	ctx := context.Background()
 	exp, err := newExporter()
 	if err != nil {
@@ -25,7 +24,7 @@ func InitTracerProvider(serviceName string) (trace.TracerProvider, error) {
 	}
 	tp := newTraceProvider(exp, serviceName)
 	defer func() { _ = tp.Shutdown(ctx) }()
-	
+
 	return tp, nil
 }
 
