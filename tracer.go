@@ -14,6 +14,13 @@ import (
 
 /*
 InitTracerProvider initializes tracerProvider and returns it. It also returns error which may happen during init process
+Here is how to set it up during your server init(don't forget to add ExtractTraceInfoMiddleware in your router):
+//	tp, err := traceLib.InitTracerProvider("some name")
+//	tracer := tp.Tracer("some name")
+//	if err != nil {
+//		log.Println(err)
+//	}
+//	defer func() { _ = tp.Shutdown(context.Background()) }()
 */
 func InitTracerProvider(serviceName string) (*sdktrace.TracerProvider, error) {
 	exp, err := newExporter()
